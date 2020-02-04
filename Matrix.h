@@ -3,10 +3,24 @@
 
 #include <vector>
 
+template <typename T>
+using Array1D = std::vector<T>;
+
+template <typename T>
+using Array2D = std::vector<std::vector<T>>;
+
+
 class Matrix {
 public:
 	Matrix();
+	Matrix(int cols, int rows);
 	~Matrix();
+
+	// Assignment
+	Matrix& operator=(const Matrix& copyMatrix);
+
+	// Multiplication
+	Matrix& operator*=(const Matrix& copyMatrix);
 
 	int GetCols() const;
 	int GetRows() const;
@@ -14,6 +28,8 @@ public:
 private:
 	int m_cols;
 	int m_rows;
+
+	Array2D<double> m_matrix;
 };
 
 #endif // !MATRIX_H
