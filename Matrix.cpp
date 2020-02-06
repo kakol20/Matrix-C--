@@ -4,6 +4,10 @@ Matrix::Matrix()
 {
 }
 
+Matrix::Matrix(const Array2D<double>& matrix)
+{
+}
+
 Matrix::Matrix(int cols, int rows)
 {
 }
@@ -51,19 +55,21 @@ Matrix& Matrix::operator*=(const Matrix& copyMatrix)
 
 	Array2D<double> newMatrix;
 
-	for (int i = 0; i < m_rows; i++)
+	Create2DArray(newCols, newRows, newMatrix);
+
+	for (int i = 0; i < copyMatrix.m_cols; i++) // go through right side matrix's col
 	{
-		Array1D<double> yGrid;
-
-		double total = 0.0;
-		for (int j = 0; j < copyMatrix.GetRows(); j++)
+		for (int j = 0; j < m_rows; j++)
 		{
-			total += m_matrix[j][i] * copyMatrix.m_matrix[i][j];
+			double total = 0.0;
+
+			for (int k = 0; k < copyMatrix.m_rows; k++)
+			{
+				total += m_matrix[k][j] * copyMatrix.m_matrix[i][k];
+			}
+			
+			newMatrix[i][j] = total;
 		}
-
-		yGrid.push_back(total);
-
-		newMatrix.push_back(yGrid);
 	}
 
 	m_matrix.clear();
@@ -94,4 +100,17 @@ int Matrix::GetCols() const
 int Matrix::GetRows() const
 {
 	return m_rows;
+}
+
+void Matrix::Create2DArray(int col, int row, Array2D<double>& copy)
+{
+	for (int x = 0; x < col; x++)
+	{
+		Array1D<double> yGrid;
+		for (int y = 0; y < row; y++)
+		{
+			yGrid.push_back(0.0);
+		}
+		copy.push_back(yGrid);
+	}
 }

@@ -13,6 +13,7 @@ using Array2D = std::vector<std::vector<T>>;
 class Matrix {
 public:
 	Matrix();
+	Matrix(const Array2D<double>& matrix);
 	Matrix(int cols, int rows);
 	~Matrix();
 
@@ -24,6 +25,9 @@ public:
 
 	int GetCols() const;
 	int GetRows() const;
+
+private:
+	void Create2DArray(int col, int row, Array2D<double>& copy);
 
 private:
 	int m_cols;
