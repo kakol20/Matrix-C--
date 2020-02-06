@@ -51,10 +51,39 @@ Matrix& Matrix::operator*=(const Matrix& copyMatrix)
 
 	Array2D<double> newMatrix;
 
-	for (int x = 0; x < m_rows; x++)
+	for (int i = 0; i < m_rows; i++)
 	{
 		Array1D<double> yGrid;
+
+		double total = 0.0;
+		for (int j = 0; j < copyMatrix.GetRows(); j++)
+		{
+			total += m_matrix[j][i] * copyMatrix.m_matrix[i][j];
+		}
+
+		yGrid.push_back(total);
+
+		newMatrix.push_back(yGrid);
 	}
+
+	m_matrix.clear();
+
+	for (int x = 0; x < newMatrix.size(); x++)
+	{
+		Array1D<double> yGrid;
+
+		for (int y = 0; y < newMatrix[x].size(); y++)
+		{
+			yGrid.push_back(newMatrix[x][y]);
+		}
+
+		m_matrix.push_back(yGrid);
+	}
+
+	m_cols = newCols;
+	m_rows = newRows;
+
+	return *this;
 }
 
 int Matrix::GetCols() const
