@@ -10,6 +10,8 @@ Matrix::Matrix(const Array2D<double>& matrix)
 
 Matrix::Matrix(int cols, int rows)
 {
+	m_cols = cols;
+	m_rows = rows;
 }
 
 Matrix::~Matrix()
