@@ -105,9 +105,6 @@ Matrix& Matrix::operator=(const Array2D<double>& matrix)
 
 Matrix Matrix::operator*(const Matrix& copyMatrix)
 {
-	m_cols = copyMatrix.m_cols;
-	m_rows = copyMatrix.m_rows;
-
 	Matrix newMatrix = m_matrix;
 	newMatrix *= copyMatrix;
 
@@ -164,6 +161,27 @@ Matrix& Matrix::operator*=(const Matrix& copyMatrix)
 
 	m_cols = newCols;
 	m_rows = newRows;
+
+	return *this;
+}
+
+Matrix Matrix::operator*(const double scalar)
+{
+	Matrix newMatrix = m_matrix;
+	newMatrix *= scalar;
+
+	return newMatrix;
+}
+
+Matrix& Matrix::operator*=(const double scalar)
+{
+	for (int x = 0; x < m_cols; x++)
+	{
+		for (int y = 0; y < m_rows; y++)
+		{
+			m_matrix[x][y] *= scalar;
+		}
+	}
 
 	return *this;
 }
@@ -241,7 +259,7 @@ int Matrix::GetRows() const
 	return m_rows;
 }
 
-void Matrix::Create2DArray(int col, int row, Array2D<double>& copy)
+void Matrix::Create2DArray(const int col, const int row, Array2D<double>& copy)
 {
 	for (int x = 0; x < col; x++)
 	{

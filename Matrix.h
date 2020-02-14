@@ -24,6 +24,10 @@ public:
 	// Multiplication
 	Matrix operator*(const Matrix& copyMatrix);
 	Matrix& operator*=(const Matrix& copyMatrix);
+	
+	/// Scalar
+	Matrix operator*(const double scalar);
+	Matrix& operator*=(const double scalar);
 
 	// Addition
 	Matrix operator+(const Matrix& copyMatrix);
@@ -39,7 +43,7 @@ public:
 	int GetRows() const;
 
 private:
-	void Create2DArray(int col, int row, Array2D<double>& copy);
+	void Create2DArray(const int col, const int row, Array2D<double>& copy);
 
 private:
 	int m_cols;
