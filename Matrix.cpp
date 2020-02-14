@@ -6,6 +6,37 @@ Matrix::Matrix()
 
 Matrix::Matrix(const Array2D<double>& matrix)
 {
+	m_cols = matrix.size();
+	m_rows = matrix[0].size();
+
+	m_matrix.clear();
+
+	for (int x = 0; x < m_cols; x++)
+	{
+		Array1D<double> yGrid;
+		for (int y = 0; y < m_rows; y++)
+		{
+			yGrid.push_back(matrix[x][y]);
+		}
+		m_matrix.push_back(yGrid);
+	}
+}
+
+Matrix::Matrix(const Matrix& copyMatrix)
+{
+	m_cols = copyMatrix.m_cols;
+	m_rows = copyMatrix.m_rows;
+
+	m_matrix.clear();
+	for (int x = 0; x < m_cols; x++)
+	{
+		Array1D<double> yGrid;
+		for (int y = 0; y < m_rows; y++)
+		{
+			yGrid.push_back(copyMatrix.m_matrix[x][y]);
+		}
+		m_matrix.push_back(yGrid);
+	}
 }
 
 Matrix::Matrix(int cols, int rows)
@@ -40,9 +71,40 @@ Matrix& Matrix::operator=(const Matrix& copyMatrix)
 	return *this;
 }
 
+Matrix& Matrix::operator=(const Array2D<double>& matrix)
+{
+	m_cols = matrix.size();
+	m_rows = matrix[0].size();
+
+	m_matrix.clear();
+
+	for (int x = 0; x < m_cols; x++)
+	{
+		Array1D<double> yGrid;
+		for (int y = 0; y < m_rows; y++)
+		{
+			yGrid.push_back(matrix[x][y]);
+		}
+		m_matrix.push_back(yGrid);
+	}
+
+	return *this;
+}
+
+Matrix Matrix::operator*(const Matrix& copyMatrix)
+{
+	m_cols = copyMatrix.m_cols;
+	m_rows = copyMatrix.m_rows;
+
+	Matrix newMatrix = m_matrix;
+	newMatrix *= copyMatrix;
+
+	return newMatrix;
+}
+
 Matrix& Matrix::operator*=(const Matrix& copyMatrix)
 {
-	if (m_cols != copyMatrix.m_rows) 
+	if (m_cols != copyMatrix.m_rows)
 	{
 		m_cols = 0;
 		m_rows = 0;
@@ -69,7 +131,7 @@ Matrix& Matrix::operator*=(const Matrix& copyMatrix)
 			{
 				total += m_matrix[k][j] * copyMatrix.m_matrix[i][k];
 			}
-			
+
 			newMatrix[i][j] = total;
 		}
 	}
@@ -90,6 +152,19 @@ Matrix& Matrix::operator*=(const Matrix& copyMatrix)
 
 	m_cols = newCols;
 	m_rows = newRows;
+
+	return *this;
+}
+
+Matrix& Matrix::operator=(double(*f)(double))
+{
+	for (int x = 0; x < m_cols; x++)
+	{
+		for (int y = 0; y < m_rows; y++)
+		{
+			m_matrix[x][y] = (*f)(m_matrix[x][y]);
+		}
+	}
 
 	return *this;
 }

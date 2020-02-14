@@ -9,19 +9,23 @@ using Array1D = std::vector<T>;
 template <typename T>
 using Array2D = std::vector<std::vector<T>>;
 
-
 class Matrix {
 public:
 	Matrix();
 	Matrix(const Array2D<double>& matrix);
+	Matrix(const Matrix& copyMatrix);
 	Matrix(int cols, int rows);
 	~Matrix();
 
 	// Assignment
 	Matrix& operator=(const Matrix& copyMatrix);
+	Matrix& operator=(const Array2D<double>& matrix);
 
 	// Multiplication
+	Matrix operator*(const Matrix& copyMatrix);
 	Matrix& operator*=(const Matrix& copyMatrix);
+
+	Matrix& operator=(double (*f)(double));
 
 	int GetCols() const;
 	int GetRows() const;
