@@ -2,6 +2,8 @@
 
 Matrix::Matrix()
 {
+	m_rows = 0;
+	m_cols = 0;
 }
 
 Matrix::Matrix(const Array2D<double>& matrix)
@@ -43,6 +45,16 @@ Matrix::Matrix(int cols, int rows)
 {
 	m_cols = cols;
 	m_rows = rows;
+
+	for (int x = 0; x < m_cols; x++)
+	{
+		Array1D<double> yGrid;
+		for (int y = 0; y < m_rows; y++)
+		{
+			yGrid.push_back(0.0);
+		}
+		m_matrix.push_back(yGrid);
+	}
 }
 
 Matrix::~Matrix()

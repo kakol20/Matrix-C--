@@ -29,6 +29,7 @@ public:
 	Matrix operator+(const Matrix& copyMatrix);
 	Matrix& operator+=(const Matrix& copyMatrix);
 
+	// Applying a function to every value in matrix
 	Matrix& operator=(double (*f)(double));
 
 	int GetCols() const;
