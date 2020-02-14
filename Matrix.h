@@ -25,6 +25,10 @@ public:
 	Matrix operator*(const Matrix& copyMatrix);
 	Matrix& operator*=(const Matrix& copyMatrix);
 
+	// Addition
+	Matrix operator+(const Matrix& copyMatrix);
+	Matrix& operator+=(const Matrix& copyMatrix);
+
 	Matrix& operator=(double (*f)(double));
 
 	int GetCols() const;

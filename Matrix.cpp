@@ -156,6 +156,30 @@ Matrix& Matrix::operator*=(const Matrix& copyMatrix)
 	return *this;
 }
 
+Matrix Matrix::operator+(const Matrix& copyMatrix)
+{
+	Matrix newMatrix = m_matrix;
+	newMatrix += copyMatrix;
+
+	return newMatrix;
+}
+
+Matrix& Matrix::operator+=(const Matrix& copyMatrix)
+{
+	if (m_cols == copyMatrix.m_cols && m_rows == copyMatrix.m_rows)
+	{
+		for (int x = 0; x < m_cols; x++)
+		{
+			for (int y = 0; y < m_rows; y++)
+			{
+				m_matrix[x][y] += copyMatrix.m_matrix[x][y];
+			}
+		}
+	}
+
+	return *this;
+}
+
 Matrix& Matrix::operator=(double(*f)(double))
 {
 	for (int x = 0; x < m_cols; x++)
