@@ -205,6 +205,32 @@ Matrix& Matrix::operator=(double(*f)(double))
 	return *this;
 }
 
+Matrix Matrix::Identity(const int size)
+{
+	Array2D<double> matrix;
+
+	for (int x = 0; x < size; x++)
+	{
+		Array1D<double> yGrid;
+		for (int y = 0; y < size; y++)
+		{
+			if (x == y)
+			{
+				yGrid.push_back(1.0);
+			}
+			else
+			{
+				yGrid.push_back(0.0);
+			}
+		}
+		matrix.push_back(yGrid);
+	}
+
+	Matrix result = matrix;
+
+	return result;
+}
+
 int Matrix::GetCols() const
 {
 	return m_cols;

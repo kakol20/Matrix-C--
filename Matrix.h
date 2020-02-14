@@ -32,6 +32,9 @@ public:
 	// Applying a function to every value in matrix
 	Matrix& operator=(double (*f)(double));
 
+	// Identity
+	static Matrix Identity(const int size);
+
 	int GetCols() const;
 	int GetRows() const;
 
