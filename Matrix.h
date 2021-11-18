@@ -3,9 +3,17 @@
 
 #include <vector>
 
+/// <summary>
+/// 1D Array Template
+/// </summary>
+/// <typeparam name="T"></typeparam>
 template <typename T>
 using Array1D = std::vector<T>;
 
+/// <summary>
+/// 2D Array Template
+/// </summary>
+/// <typeparam name="T"></typeparam>
 template <typename T>
 using Array2D = std::vector<std::vector<T>>;
 
@@ -17,26 +25,50 @@ public:
 	Matrix(int cols, int rows);
 	~Matrix();
 
-	// Assignment
+	/// <summary>
+	/// Assignment
+	/// </summary>
+	/// <param name="copyMatrix"></param>
+	/// <returns></returns>
 	Matrix& operator=(const Matrix& copyMatrix);
 	Matrix& operator=(const Array2D<double>& matrix);
 
-	// Multiplication
+	/// <summary>
+	/// Multiplication
+	/// </summary>
+	/// <param name="copyMatrix"></param>
+	/// <returns></returns>
 	Matrix operator*(const Matrix& copyMatrix);
 	Matrix& operator*=(const Matrix& copyMatrix);
 	
+	/// <summary>
 	/// Scalar
+	/// </summary>
+	/// <param name="scalar"></param>
+	/// <returns></returns>
 	Matrix operator*(const double scalar);
 	Matrix& operator*=(const double scalar);
 
-	// Addition
+	/// <summary>
+	/// Addition
+	/// </summary>
+	/// <param name="copyMatrix"></param>
+	/// <returns></returns>
 	Matrix operator+(const Matrix& copyMatrix);
 	Matrix& operator+=(const Matrix& copyMatrix);
 
-	// Applying a function to every value in matrix
+	/// <summary>
+	/// Applying a function to every value in matrix
+	/// </summary>
+	/// <param name="f"></param>
+	/// <returns></returns>
 	Matrix& operator=(double (*f)(double));
 
-	// Identity
+	/// <summary>
+	/// Identity
+	/// </summary>
+	/// <param name="size"></param>
+	/// <returns></returns>
 	static Matrix Identity(const int size);
 
 	int GetCols() const;
