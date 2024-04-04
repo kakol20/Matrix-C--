@@ -1,273 +1,244 @@
+#include <cmath>
+
 #include "Matrix.h"
 
-Matrix::Matrix()
-{
-	m_rows = 0;
-	m_cols = 0;
+//Matrix::Matrix(const size_t cols, const size_t rows) {
+//}
+
+Matrix::Matrix(const Array2D<double>& matrix) {
+    m_cols = matrix.size();
+    m_rows = matrix[0].size();
+
+    m_matrix.clear();
+    m_matrix.reserve(m_cols);
+
+    for (size_t i = 0; i < m_cols; i++) {
+        Array1D<double> jGrid;
+        jGrid.reserve(m_rows);
+
+        for (size_t j = 0; j < m_rows; j++) {
+            jGrid.push_back(matrix[i][j]);
+        }
+        m_matrix.push_back(jGrid);
+    }
 }
 
-Matrix::Matrix(const Array2D<double>& matrix)
-{
-	m_cols = matrix.size();
-	m_rows = matrix[0].size();
+Matrix::Matrix(const Matrix& other) {
+    m_cols = other.m_matrix.size();
+    m_rows = other.m_matrix[0].size();
 
-	m_matrix.clear();
+    m_matrix.clear();
+    m_matrix.reserve(m_cols);
 
-	for (int x = 0; x < m_cols; x++)
-	{
-		Array1D<double> yGrid;
-		for (int y = 0; y < m_rows; y++)
-		{
-			yGrid.push_back(matrix[x][y]);
-		}
-		m_matrix.push_back(yGrid);
-	}
+    for (size_t i = 0; i < m_cols; i++) {
+        Array1D<double> jGrid;
+        jGrid.reserve(m_rows);
+
+        for (size_t j = 0; j < m_rows; j++) {
+            jGrid.push_back(other.m_matrix[i][j]);
+        }
+        m_matrix.push_back(jGrid);
+    }
 }
 
-Matrix::Matrix(const Matrix& copyMatrix)
-{
-	m_cols = copyMatrix.m_cols;
-	m_rows = copyMatrix.m_rows;
+Matrix::Matrix(const size_t cols, const size_t rows) {
+    m_cols = cols;
+    m_rows = rows;
 
-	m_matrix.clear();
-	for (int x = 0; x < m_cols; x++)
-	{
-		Array1D<double> yGrid;
-		for (int y = 0; y < m_rows; y++)
-		{
-			yGrid.push_back(copyMatrix.m_matrix[x][y]);
-		}
-		m_matrix.push_back(yGrid);
-	}
+    m_matrix.clear();
+    m_matrix.reserve(m_cols);
+
+    for (size_t i = 0; i < m_cols; i++) {
+        Array1D<double> jGrid;
+        jGrid.reserve(m_rows);
+
+        for (size_t j = 0; j < m_rows; j++) {
+            jGrid.push_back(0.0);
+        }
+        m_matrix.push_back(jGrid);
+    }
 }
 
-Matrix::Matrix(int cols, int rows)
-{
-	m_cols = cols;
-	m_rows = rows;
+Matrix& Matrix::operator=(const Array2D<double>& copy) {
+    m_cols = copy.size();
+    m_rows = copy[0].size();
 
-	for (int x = 0; x < m_cols; x++)
-	{
-		Array1D<double> yGrid;
-		for (int y = 0; y < m_rows; y++)
-		{
-			yGrid.push_back(0.0);
-		}
-		m_matrix.push_back(yGrid);
-	}
+    m_matrix.clear();
+    m_matrix.reserve(m_cols);
+
+    for (size_t i = 0; i < m_cols; i++) {
+        Array1D<double> jGrid;
+        jGrid.reserve(m_rows);
+
+        for (size_t j = 0; j < m_rows; j++) {
+            jGrid.push_back(copy[i][j]);
+        }
+        m_matrix.push_back(jGrid);
+    }
+    return *this;
 }
 
-Matrix::~Matrix()
-{
+Matrix& Matrix::operator=(const Matrix& copy) {
+    if (this == &copy) return *this;
+
+    m_cols = copy.m_matrix.size();
+    m_rows = copy.m_matrix[0].size();
+
+    m_matrix.clear();
+    m_matrix.reserve(m_cols);
+
+    for (size_t i = 0; i < m_cols; i++) {
+        Array1D<double> jGrid;
+        jGrid.reserve(m_rows);
+
+        for (size_t j = 0; j < m_rows; j++) {
+            jGrid.push_back(copy.m_matrix[i][j]);
+        }
+        m_matrix.push_back(jGrid);
+    }
+
+    return *this;
 }
 
-Matrix& Matrix::operator=(const Matrix& copyMatrix)
-{
-	if (&copyMatrix == this) return *this;
-
-	m_cols = copyMatrix.m_cols;
-	m_rows = copyMatrix.m_rows;
-
-	m_matrix.clear();
-
-	for (int x = 0; x < m_cols; x++)
-	{
-		Array1D<double> yGrid;
-		for (int y = 0; y < m_rows; y++)
-		{
-			yGrid.push_back(copyMatrix.m_matrix[x][y]);
-		}
-		m_matrix.push_back(yGrid);
-	}
-
-	return *this;
+Matrix Matrix::operator*(const Matrix& rhs) {
+    Matrix out(m_matrix);
+    out *= rhs;
+    return out;
 }
 
-Matrix& Matrix::operator=(const Array2D<double>& matrix)
-{
-	m_cols = matrix.size();
-	m_rows = matrix[0].size();
+Matrix& Matrix::operator*=(const Matrix& rhs) {
+    if (m_cols != rhs.m_rows) return *this; // Invalid multiplication
 
-	m_matrix.clear();
+    const size_t newCols = rhs.m_cols;
+    const size_t newRows = m_rows;
 
-	for (int x = 0; x < m_cols; x++)
-	{
-		Array1D<double> yGrid;
-		for (int y = 0; y < m_rows; y++)
-		{
-			yGrid.push_back(matrix[x][y]);
-		}
-		m_matrix.push_back(yGrid);
-	}
+    Array2D<double> newMat;
+    newMat.reserve(newCols);
+    for (size_t i = 0; i < newCols; i++) {
+        Array1D<double> jGrid;
+        jGrid.reserve(newRows);
+        for (size_t j = 0; j < newRows; j++) {
+            double total = 0;
 
-	return *this;
+            for (size_t k = 0; k < rhs.m_rows; k++) {
+                total += m_matrix[k][j] * rhs.m_matrix[i][k];
+            }
+            jGrid.push_back(total);
+        }
+        newMat.push_back(jGrid);
+    }
+
+    (*this) = newMat;
+    return *this;
 }
 
-Matrix Matrix::operator*(const Matrix& copyMatrix)
-{
-	Matrix newMatrix = m_matrix;
-	newMatrix *= copyMatrix;
+Matrix& Matrix::operator/=(const double scalar) {
+    for (size_t i = 0; i < m_cols; i++) {
+        for (size_t j = 0; j < m_rows; j++) {
+            m_matrix[i][j] /= scalar;
+        }
+    }
 
-	return newMatrix;
+    return *this;
 }
 
-Matrix& Matrix::operator*=(const Matrix& copyMatrix)
-{
-	if (m_cols != copyMatrix.m_rows)
-	{
-		m_cols = 0;
-		m_rows = 0;
+bool Matrix::Invert3x3() {
+    // https://www.cuemath.com/algebra/inverse-of-3x3-matrix/
+    if (m_cols == 3 && m_rows == 3) {
+        // Find Adjoint of matrix
+        Matrix adjoint(m_matrix);
+        adjoint.Cofactor3x3();
+        adjoint.Transpose();
 
-		m_matrix.clear();
+        const double determinant = (*this).Determinant3x3();
 
-		return *this;
-	}
+        if (determinant == 0.0) return false;
 
-	int newCols = copyMatrix.m_cols;
-	int newRows = m_rows;
+        adjoint /= determinant;
 
-	Array2D<double> newMatrix;
+        (*this) = adjoint;
 
-	Create2DArray(newCols, newRows, newMatrix);
+        return true;
+    }
 
-	for (int i = 0; i < copyMatrix.m_cols; i++) // go through right side matrix's col
-	{
-		for (int j = 0; j < m_rows; j++)
-		{
-			double total = 0.0;
-
-			for (int k = 0; k < copyMatrix.m_rows; k++)
-			{
-				total += m_matrix[k][j] * copyMatrix.m_matrix[i][k];
-			}
-
-			newMatrix[i][j] = total;
-		}
-	}
-
-	m_matrix.clear();
-
-	for (int x = 0; x < newMatrix.size(); x++)
-	{
-		Array1D<double> yGrid;
-
-		for (int y = 0; y < newMatrix[x].size(); y++)
-		{
-			yGrid.push_back(newMatrix[x][y]);
-		}
-
-		m_matrix.push_back(yGrid);
-	}
-
-	m_cols = newCols;
-	m_rows = newRows;
-
-	return *this;
+    return false;
 }
 
-Matrix Matrix::operator*(const double scalar)
-{
-	Matrix newMatrix = m_matrix;
-	newMatrix *= scalar;
+bool Matrix::Cofactor3x3() {
+    if (m_cols == 3 && m_rows == 3) {
+        Matrix newMat(3, 3);
 
-	return newMatrix;
+        for (size_t i = 0; i < 3; i++) {
+            for (size_t j = 0; j < 3; j++) {
+                const size_t colMax = i <= 1 ? 2 : 1;
+                const size_t colMin = i >= 1 ? 0 : 1;
+                
+                const size_t rowMax = j <= 1 ? 2 : 1;
+                const size_t rowMin = j >= 1 ? 0 : 1;
+
+                Array2D<double> detArr;
+                detArr.reserve(2);
+                detArr.push_back({ m_matrix[colMin][rowMin], m_matrix[colMin][rowMax] });
+                detArr.push_back({ m_matrix[colMax][rowMin], m_matrix[colMax][rowMax] });
+
+                Matrix detMat = detArr;
+
+                newMat.m_matrix[i][j] = detMat.Determinant2x2() * std::pow(-1, i + j + 2);
+            }
+        }
+
+        (*this) = newMat;
+
+        return true;
+    }
+    return false;
 }
 
-Matrix& Matrix::operator*=(const double scalar)
-{
-	for (int x = 0; x < m_cols; x++)
-	{
-		for (int y = 0; y < m_rows; y++)
-		{
-			m_matrix[x][y] *= scalar;
-		}
-	}
-
-	return *this;
+double Matrix::Determinant2x2() const {
+    if (m_cols == 2 && m_rows == 2) {
+        return (m_matrix[0][0] * m_matrix[1][1]) - (m_matrix[1][0] * m_matrix[0][1]);
+    }
+    return NAN;
 }
 
-Matrix Matrix::operator+(const Matrix& copyMatrix)
-{
-	Matrix newMatrix = m_matrix;
-	newMatrix += copyMatrix;
+void Matrix::Transpose() {
+    Matrix newMat(m_cols, m_rows);
 
-	return newMatrix;
+    for (size_t i = 0; i < m_cols; i++) {
+        for (size_t j = 0; j < m_rows; j++) {
+            newMat.m_matrix[j][i] = m_matrix[i][j];
+        }
+    }
+
+    (*this) = newMat;
 }
 
-Matrix& Matrix::operator+=(const Matrix& copyMatrix)
-{
-	if (m_cols == copyMatrix.m_cols && m_rows == copyMatrix.m_rows)
-	{
-		for (int x = 0; x < m_cols; x++)
-		{
-			for (int y = 0; y < m_rows; y++)
-			{
-				m_matrix[x][y] += copyMatrix.m_matrix[x][y];
-			}
-		}
-	}
+double Matrix::Determinant3x3() const {
+    if (m_cols == 3 && m_rows == 3) {
+        return (m_matrix[0][0] * m_matrix[1][1] * m_matrix[2][2]) +
+            (m_matrix[1][0] * m_matrix[2][1] * m_matrix[0][2]) +
+            (m_matrix[2][0] * m_matrix[0][1] * m_matrix[1][2]) -
 
-	return *this;
+            (m_matrix[0][0] * m_matrix[2][1] * m_matrix[1][2]) -
+            (m_matrix[1][0] * m_matrix[0][1] * m_matrix[2][2]) -
+            (m_matrix[2][0] * m_matrix[1][1] * m_matrix[0][2]);
+    }
+
+    return NAN;
 }
 
-Matrix& Matrix::operator=(double(*f)(double))
-{
-	for (int x = 0; x < m_cols; x++)
-	{
-		for (int y = 0; y < m_rows; y++)
-		{
-			m_matrix[x][y] = (*f)(m_matrix[x][y]);
-		}
-	}
-
-	return *this;
+void Matrix::Pow(const double pow) {
+    for (size_t i = 0; i < m_cols; i++) {
+        for (size_t j = 0; j < m_rows; j++) {
+            m_matrix[i][j] = std::pow(m_matrix[i][j], pow);
+        }
+    }
 }
 
-Matrix Matrix::Identity(const int size)
-{
-	Array2D<double> matrix;
-
-	for (int x = 0; x < size; x++)
-	{
-		Array1D<double> yGrid;
-		for (int y = 0; y < size; y++)
-		{
-			if (x == y)
-			{
-				yGrid.push_back(1.0);
-			}
-			else
-			{
-				yGrid.push_back(0.0);
-			}
-		}
-		matrix.push_back(yGrid);
-	}
-
-	Matrix result = matrix;
-
-	return result;
-}
-
-int Matrix::GetCols() const
-{
-	return m_cols;
-}
-
-int Matrix::GetRows() const
-{
-	return m_rows;
-}
-
-void Matrix::Create2DArray(const int col, const int row, Array2D<double>& copy)
-{
-	for (int x = 0; x < col; x++)
-	{
-		Array1D<double> yGrid;
-		for (int y = 0; y < row; y++)
-		{
-			yGrid.push_back(0.0);
-		}
-		copy.push_back(yGrid);
-	}
+void Matrix::Cbrt() {
+    for (size_t i = 0; i < m_cols; i++) {
+        for (size_t j = 0; j < m_rows; j++) {
+            m_matrix[i][j] = std::cbrt(m_matrix[i][j]);
+        }
+    }
 }
