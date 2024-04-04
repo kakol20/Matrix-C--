@@ -1,5 +1,4 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#pragma once
 
 #include <vector>
 
@@ -19,69 +18,59 @@ using Array2D = std::vector<std::vector<T>>;
 
 class Matrix {
 public:
-	Matrix();
-	Matrix(const Array2D<double>& matrix);
-	Matrix(const Matrix& copyMatrix);
-	Matrix(int cols, int rows);
-	~Matrix();
+    Matrix(const Array2D<double>& matrix);
+    Matrix(const Matrix& other);
+    Matrix(const size_t cols = 1, const size_t rows = 1);
+    ~Matrix() {};
 
-	/// <summary>
-	/// Assignment
-	/// </summary>
-	/// <param name="copyMatrix"></param>
-	/// <returns></returns>
-	Matrix& operator=(const Matrix& copyMatrix);
-	Matrix& operator=(const Array2D<double>& matrix);
+    // ----- ASSIGNMENT OPERATOR -----
 
-	/// <summary>
-	/// Multiplication
-	/// </summary>
-	/// <param name="copyMatrix"></param>
-	/// <returns></returns>
-	Matrix operator*(const Matrix& copyMatrix);
-	Matrix& operator*=(const Matrix& copyMatrix);
-	
-	/// <summary>
-	/// Scalar
-	/// </summary>
-	/// <param name="scalar"></param>
-	/// <returns></returns>
-	Matrix operator*(const double scalar);
-	Matrix& operator*=(const double scalar);
+    Matrix& operator=(const Array2D<double>& copy);
+    Matrix& operator=(const Matrix& copy);
 
-	/// <summary>
-	/// Addition
-	/// </summary>
-	/// <param name="copyMatrix"></param>
-	/// <returns></returns>
-	Matrix operator+(const Matrix& copyMatrix);
-	Matrix& operator+=(const Matrix& copyMatrix);
+    // ----- MULTIPLICATION -----
 
-	/// <summary>
-	/// Applying a function to every value in matrix
-	/// </summary>
-	/// <param name="f"></param>
-	/// <returns></returns>
-	Matrix& operator=(double (*f)(double));
+    Matrix operator*(const Matrix& rhs);
+    Matrix& operator*=(const Matrix& rhs);
 
-	/// <summary>
-	/// Identity
-	/// </summary>
-	/// <param name="size"></param>
-	/// <returns></returns>
-	static Matrix Identity(const int size);
+    Matrix& operator/=(const double scalar);
 
-	int GetCols() const;
-	int GetRows() const;
+    // ----- INVERSION -----
+
+    /// <summary>
+    /// Invert a 3 by 3 matrix
+    /// </summary>
+    /// <returns>If successful</returns>
+    bool Invert3x3();
+
+    /// <summary>
+    /// Get Cofactor of a 3 by 3 matrix
+    /// </summary>
+    /// <returns>If successful</returns>
+    bool Cofactor3x3();
+
+    /// <summary>
+    /// Get determinant of a 2 by 2 matrix
+    /// </summary>
+    /// <returns></returns>
+    double Determinant2x2() const;
+
+    void Transpose();
+
+    /// <summary>
+    /// Get determinant of a 3 by 3 matrix
+    /// </summary>
+    /// <returns></returns>
+    double Determinant3x3() const;
+
+    // ----- OTHER -----
+
+    void Pow(const double pow);
+    void Cbrt();
 
 private:
-	void Create2DArray(const int col, const int row, Array2D<double>& copy);
+    size_t m_cols, m_rows;
 
-private:
-	int m_cols;
-	int m_rows;
+    Array2D<double> m_matrix;
 
-	Array2D<double> m_matrix;
 };
-
-#endif // !MATRIX_H
