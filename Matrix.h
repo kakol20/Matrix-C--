@@ -1,76 +1,41 @@
 #pragma once
 
-#include <vector>
+#include <string>
 
-/// <summary>
-/// 1D Array Template
-/// </summary>
-/// <typeparam name="T"></typeparam>
-template <typename T>
-using Array1D = std::vector<T>;
-
-/// <summary>
-/// 2D Array Template
-/// </summary>
-/// <typeparam name="T"></typeparam>
-template <typename T>
-using Array2D = std::vector<std::vector<T>>;
+#include "Pseudo2DArray.hpp"
 
 class Matrix {
 public:
-    Matrix(const Array2D<double>& matrix);
-    Matrix(const Matrix& other);
-    Matrix(const size_t cols = 1, const size_t rows = 1);
-    ~Matrix() {};
+  Matrix(const std::vector<long double>& arr = { 1 }, const unsigned int cols = 1, const unsigned int rows = 1);
+  Matrix(const Pseudo2DArray<long double>& arr);
+  Matrix(const Matrix& other);
+  ~Matrix() {};
 
-    // ----- ASSIGNMENT OPERATOR -----
+  Matrix& operator=(const Matrix& other);
 
-    Matrix& operator=(const Array2D<double>& copy);
-    Matrix& operator=(const Matrix& copy);
+  Matrix& operator*=(const Matrix& rhs);
+  Matrix operator*(const Matrix& rhs) const;
 
-    // ----- MULTIPLICATION -----
+  Matrix& operator*=(const long double scalar);
+  Matrix operator*(const long double scalar) const;
 
-    Matrix operator*(const Matrix& rhs);
-    Matrix& operator*=(const Matrix& rhs);
+  long double& operator()(const unsigned int x, const unsigned int y);
+  long double operator()(const unsigned int x, const unsigned int y) const;
 
-    Matrix& operator/=(const double scalar);
+  void Pow(const long double p);
+  void Cbrt();
+  void NRoot(const long double n);
 
-    // ----- INVERSION -----
+  long double Determinant3x3() const;
+  void Transpose();
+  long double Determinant2x2() const;
+  bool Cofactor3x3();
+  bool Invert3x3();
 
-    /// <summary>
-    /// Invert a 3 by 3 matrix
-    /// </summary>
-    /// <returns>If successful</returns>
-    bool Invert3x3();
-
-    /// <summary>
-    /// Get Cofactor of a 3 by 3 matrix
-    /// </summary>
-    /// <returns>If successful</returns>
-    bool Cofactor3x3();
-
-    /// <summary>
-    /// Get determinant of a 2 by 2 matrix
-    /// </summary>
-    /// <returns></returns>
-    double Determinant2x2() const;
-
-    void Transpose();
-
-    /// <summary>
-    /// Get determinant of a 3 by 3 matrix
-    /// </summary>
-    /// <returns></returns>
-    double Determinant3x3() const;
-
-    // ----- OTHER -----
-
-    void Pow(const double pow);
-    void Cbrt();
+  std::string Debug(const int indentSize = 0) const { return m_mat.Debug(indentSize); };
 
 private:
-    size_t m_cols, m_rows;
+  Pseudo2DArray<long double> m_mat;
 
-    Array2D<double> m_matrix;
-
+  unsigned int m_cols, m_rows;
 };
