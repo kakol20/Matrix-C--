@@ -32,6 +32,14 @@ public:
 
   double Determinant() const;
 
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <returns>If inversion successful</returns>
+  bool Invert();
+
+  Matrix Identity() const;
+
 private:
   Pseudo2DArray<double> m_mat;
 

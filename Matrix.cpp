@@ -147,11 +147,80 @@ double Matrix::Determinant() const {
     // subtraction
 
     mult = m_mat.GetValueWrapped(x, 0);
-    for (int i = 1; i < m_rows; i++) {
+    for (int i = 1; i < (int)m_rows; i++) {
       mult *= m_mat.GetValueWrapped(x - i, i);
     }
     total -= mult;
   }
 
   return total;
+}
+
+bool Matrix::Invert() {
+  if (m_rows != m_cols) return false;
+  if ((*this).Determinant() == 0.) return false;
+
+  const unsigned int size = m_rows;
+
+  // pivoting
+
+  Pseudo2DArray<double> identity = (*this).Identity().m_mat;
+  for (unsigned int x = 0; x < size; x++) {
+    //Pseudo2DArray<double> old_mat = m_mat;
+
+    // row exchange if pivot == 0
+    // swap with value in same column with biggest abs value
+    if (m_mat(x, x) == 0.) {
+      unsigned int swap_row = x == 0 ? 1 : 0;
+      double chosen_abs = 0;
+      for (unsigned int y = 0; y < size; y++) {
+        if (x != y) {
+          double abs = std::abs(m_mat(x, y));
+
+          if (abs > chosen_abs) {
+            swap_row = y;
+          }
+        }
+      }
+
+      m_mat.SwapRows(x, swap_row);
+      identity.SwapRows(x, swap_row);
+      //old_mat.SwapRows(x, swap_row);
+    }
+
+    // zero other values in column
+    for (unsigned int y = 0; y < size; y++) {
+      if (y != x) {
+        double mult = (-1. * m_mat(x, y)) / m_mat(x, x);
+
+        for (unsigned int z = 0; z < size; z++) {
+          m_mat(z, y) = (mult * m_mat(z, x)) + m_mat(z, y);
+          identity(z, y) = (mult * identity(z, x)) + identity(z, y);
+        }
+      }
+    }
+  }
+
+  // multiply
+
+  for (unsigned int y = 0; y < size; y++) {
+    const double div = m_mat(y, y);
+    for (unsigned int x = 0; x < size; x++) {
+      identity(x, y) /= div;
+    }
+  }
+
+  m_mat = identity;
+
+  return true;
+}
+
+Matrix Matrix::Identity() const {
+  Matrix id(m_mat);
+  for (unsigned int y = 0; y < m_rows; y++) {
+    for (unsigned int x = 0; x < m_cols; x++) {
+      id.m_mat(x, y) = x == y ? 1. : 0.;
+    }
+  }
+  return id;
 }
