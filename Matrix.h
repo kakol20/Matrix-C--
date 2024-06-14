@@ -6,8 +6,8 @@
 
 class Matrix {
 public:
-  Matrix(const std::vector<long double>& arr = { 1 }, const unsigned int cols = 1, const unsigned int rows = 1);
-  Matrix(const Pseudo2DArray<long double>& arr);
+  Matrix(const std::vector<double>& arr = { 1 }, const unsigned int cols = 1, const unsigned int rows = 1);
+  Matrix(const Pseudo2DArray<double>& arr);
   Matrix(const Matrix& other);
   ~Matrix() {};
 
@@ -16,26 +16,32 @@ public:
   Matrix& operator*=(const Matrix& rhs);
   Matrix operator*(const Matrix& rhs) const;
 
-  Matrix& operator*=(const long double scalar);
-  Matrix operator*(const long double scalar) const;
+  Matrix& operator*=(const double scalar);
+  Matrix operator*(const double scalar) const;
 
-  long double& operator()(const unsigned int x, const unsigned int y);
-  long double operator()(const unsigned int x, const unsigned int y) const;
+  double& operator()(const unsigned int x, const unsigned int y);
+  double operator()(const unsigned int x, const unsigned int y) const;
 
-  void Pow(const long double p);
+  void Pow(const double p);
   void Cbrt();
-  void NRoot(const long double n);
+  void NRoot(const double n);
 
-  long double Determinant3x3() const;
   void Transpose();
-  long double Determinant2x2() const;
-  bool Cofactor3x3();
-  bool Invert3x3();
 
   std::string Debug(const int indentSize = 0) const { return m_mat.Debug(indentSize); };
 
+  double Determinant() const;
+
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <returns>If inversion successful</returns>
+  bool Invert();
+
+  Matrix Identity() const;
+
 private:
-  Pseudo2DArray<long double> m_mat;
+  Pseudo2DArray<double> m_mat;
 
   unsigned int m_cols, m_rows;
 };
