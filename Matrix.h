@@ -40,6 +40,8 @@ public:
 
   Matrix Identity() const;
 
+  void SetValue(const unsigned int x, const unsigned int y, const double value);
+
 private:
   Pseudo2DArray<double> m_mat;
 

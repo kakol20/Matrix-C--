@@ -166,8 +166,6 @@ bool Matrix::Invert() {
 
   Pseudo2DArray<double> identity = (*this).Identity().m_mat;
   for (unsigned int x = 0; x < size; x++) {
-    //Pseudo2DArray<double> old_mat = m_mat;
-
     // row exchange if pivot == 0
     // swap with value in same column with biggest abs value
     if (m_mat(x, x) == 0.) {
@@ -179,13 +177,13 @@ bool Matrix::Invert() {
 
           if (abs > chosen_abs) {
             swap_row = y;
+            chosen_abs = abs;
           }
         }
       }
 
       m_mat.SwapRows(x, swap_row);
       identity.SwapRows(x, swap_row);
-      //old_mat.SwapRows(x, swap_row);
     }
 
     // zero other values in column
@@ -223,4 +221,8 @@ Matrix Matrix::Identity() const {
     }
   }
   return id;
+}
+
+void Matrix::SetValue(const unsigned int x, const unsigned int y, const double value) {
+  m_mat(x, y) = value;
 }
