@@ -28,7 +28,7 @@ public:
 
   void Transpose();
 
-  std::string Debug(const int indentSize = 0) const { return m_mat.Debug(indentSize); };
+  std::string Debug(const int indentSize = 0, const bool negativeFormat = false) const { return m_mat.Debug(indentSize, negativeFormat); };
 
   double Determinant() const;
 
